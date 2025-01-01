@@ -16,11 +16,21 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
+      - name: Configure AWS credentials
+        id: creds
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ env.EB_ROLE_ARN }}
+          aws-region: us-east-1
+          output-credentials: true
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v18
         with:
           application_name: docker-gh
           environment_name: Dockergh-env
+          aws_access_key: ${{ steps.creds.outputs.aws-access-key-id }}
+          aws_secret_key: ${{ steps.creds.outputs.aws-secret-access-key }}
+          aws_session_token: ${{ steps.creds.outputs.aws-session-token }}
           existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
           region: us-east-1
           version_label: ${{ github.sha }}
