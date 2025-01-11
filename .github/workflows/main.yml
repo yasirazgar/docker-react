@@ -23,7 +23,7 @@ jobs:
         id: creds
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.EB_ROLE_ARN }}
+          role-to-assume: ${{ secrets.EB_ROLE_ARN }}
           aws-region: us-east-1
           output-credentials: true
       - name: Deploy to EB
